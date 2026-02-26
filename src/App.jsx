@@ -1,14 +1,17 @@
-import { Outlet, Link } from "react-router-dom"
+import { Outlet } from "react-router-dom"
+
+import Header from "./components/Header"
+import Footer from "./components/Footer"
 
 function App() {
 	return (
-		<>
-			<nav>
-				<Link to="/">Home</Link> | <Link to="/about">About</Link>
-			</nav>
-
-			<Outlet />
-		</>
+		<div className="flex flex-col h-screen">
+			<Header />
+			<main className="grow">
+				<Outlet />
+			</main>
+			<Footer />
+		</div>
 	)
 }
 
