@@ -4,6 +4,7 @@ import NotFound from "./components/NotFound"
 import Home from "./routes/Home"
 import About from "./routes/About"
 import ProductList from "./routes/ProductList"
+import ProductDetails from "./routes/ProductDetails"
 import Cart from "./routes/Cart"
 
 const router = createBrowserRouter([
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
 			{
 				path: "products",
 				element: <ProductList />,
+			},
+			{
+				path: "product/:id",
+				element: <ProductDetails />,
 			},
 			{
 				path: "cart",
