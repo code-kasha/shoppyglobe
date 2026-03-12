@@ -1,89 +1,98 @@
-import axios from "axios"
-import { useState, useEffect } from "react"
-
+import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { addToCart } from "../redux/cartSlice"
+import toast from "react-hot-toast"
 import { Link } from "react-router-dom"
 
+import useCartProducts from "../hooks/useCartProducts"
+import Spinner from "../components/Spinner"
+import Error from "../components/Error"
+
 export default function ProductList() {
-	const [products, setProducts] = useState(null)
-
 	const [page, setPage] = useState(1)
-	const [limit] = useState(10)
-	const [total, setTotal] = useState(0)
+	const dispatch = useDispatch()
+	const cartItems = useSelector((state) => state.cart.items)
 
-	useEffect(() => {
-		axios
-			.get(
-				`https://dummyjson.com/products?limit=${limit}&skip=${(page - 1) * limit}`,
-			)
-			.then((res) => {
-				setProducts(res.data.products)
-				setTotal(res.data.total)
-			})
-	}, [page, limit])
+	// Fetch products using the fixed hook
+	const { products, total, loading, error } = useCartProducts(page, 10)
 
-	const totalPages = Math.ceil(total / limit)
+	// Map products to include cart info
+	const productsWithCartInfo = products.map((p) => ({
+		...p,
+		isInCart: cartItems.some((item) => item.id === p.id),
+	}))
 
-	if (!products) return <div className="text-center p-5">Loading...</div>
+	const totalPages = Math.ceil(total / 10)
+
+	if (loading) return <Spinner message="Loading products..." />
+	if (error) return <Error message={error} />
 
 	return (
-		<div>
-			<div className="flex flex-col w-screen">
-				<h2 className="text-center p-2 font-semibold text-2xl mt-4 mb-2">
-					Product List
-				</h2>
+		<div className="max-w-7xl mx-auto px-4">
+			<h2 className="text-center font-semibold text-2xl mt-6 mb-6">
+				Product List
+			</h2>
 
-				<div className="grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-2 grow">
-					{products.map((product) => (
-						<div
-							key={product.id}
-							className="p-2 space-y-2 group w-50 md:w-60 mx-auto"
-						>
-							<img
-								src={product.thumbnail}
-								alt={product.title}
-								className="w-full border"
-							/>
+			{/* PRODUCT GRID */}
+			<div className="grid xxs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+				{productsWithCartInfo.map((product) => (
+					<div
+						key={product.id}
+						className="flex flex-col border rounded-lg p-3 space-y-2 shadow-sm hover:shadow-md transition w-4/5 mx-auto xxs:w-full"
+					>
+						<img
+							src={product.thumbnail}
+							alt={product.title}
+							className="h-40 object-cover rounded w-full"
+						/>
 
-							<h3 className="text-lg text-center truncate group-hover:whitespace-normal group-hover:overflow-visible">
-								<Link to={`/product/${product.id}`}>{product.title}</Link>
-							</h3>
+						<h3 className="text-sm font-medium line-clamp-1 hover:line-clamp-none">
+							<Link to={`/product/${product.id}`}>{product.title}</Link>
+						</h3>
 
-							<div className="flex justify-around text-sm">
-								<p title="Price">💲{product.price}</p>
-								<p title="Discount">🈹 {product.discountPercentage}</p>
-								<p title="Rating">⭐ {product.rating}</p>
-							</div>
-
-							<div className="flex flex-col sm:flex-row justify-around">
-								<Link
-									to=""
-									className="border px-2 py-1 rounded-xl bg-amber-300 hover:bg-amber-600 hover:text-white hover:border-white"
-								>
-									Add to Cart
-								</Link>
-							</div>
+						<div className="flex justify-between text-sm text-gray-600">
+							<p>💲{product.price}</p>
+							<p>⭐ {product.rating}</p>
 						</div>
-					))}
-				</div>
 
-				{/* PAGINATION */}
-				<div className="flex justify-center gap-2 mt-6 items-center">
-					<button
-						disabled={page === 1}
-						onClick={() => setPage(page - 1)}
-						className="px-3 py-1 border rounded disabled:opacity-40"
-					>
-						Prev
-					</button>
-					<p className="w-40 text-center">Page: {page}</p>
-					<button
-						disabled={page === totalPages}
-						onClick={() => setPage(page + 1)}
-						className="px-3 py-1 border rounded disabled:opacity-40"
-					>
-						Next
-					</button>
-				</div>
+						<button
+							onClick={() => {
+								dispatch(addToCart(product))
+								toast.success(`${product.title} added to cart`)
+							}}
+							disabled={product.isInCart}
+							className={`w-full py-1 rounded-md text-sm font-semibold transition
+                ${
+									product.isInCart
+										? "bg-gray-300 cursor-not-allowed"
+										: "bg-amber-400 hover:bg-amber-500 text-black"
+								}`}
+						>
+							{product.isInCart ? "In Cart" : "Add to Cart"}
+						</button>
+					</div>
+				))}
+			</div>
+
+			{/* PAGINATION */}
+			<div className="flex justify-center gap-4 mt-10 items-center">
+				<button
+					disabled={page === 1}
+					onClick={() => setPage(page - 1)}
+					className="px-4 py-1 border rounded disabled:opacity-40"
+				>
+					Prev
+				</button>
+				<p className="text-sm font-medium">
+					Page {page} of {totalPages}
+				</p>
+				<button
+					disabled={page === totalPages}
+					onClick={() => setPage(page + 1)}
+					className="px-4 py-1 border rounded disabled:opacity-40"
+				>
+					Next
+				</button>
 			</div>
 		</div>
 	)
