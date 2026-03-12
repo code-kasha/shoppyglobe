@@ -16,7 +16,7 @@
 - [✅] ProductDetail
 - [✅] Cart
 - [✅] CartItem
-- [ ] Checkout
+- [✅] Checkout
 - [✅] NotFound (404 page with proper error UI)
 
 ## 📡 Data Fetching (40 Marks)
@@ -51,7 +51,7 @@
 - [✅] Remove from cart works
 - [✅] Quantity adjustment works
 - [✅] Quantity never goes below 1
-- [ ] Search feature implemented using Redux
+- [✅] Search feature implemented using Redux
 
 ## 🖱️ Event Handling (20 Marks)
 
@@ -87,10 +87,10 @@
 
 ## 🎨 Styling (20 Marks)
 
-- [ ] CSS applied properly
-- [ ] Responsive design
-- [ ] Works on mobile
-- [ ] Clean UI
+- [✅] CSS applied properly
+- [✅] Responsive design
+- [✅] Works on mobile
+- [✅] Clean UI
 
 ## 📝 Code Quality (20 Marks)
 

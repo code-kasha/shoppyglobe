@@ -4,16 +4,15 @@ import { addToCart } from "../redux/cartSlice"
 import toast from "react-hot-toast"
 import { Link } from "react-router-dom"
 import useCartProducts from "../hooks/useCartProducts"
-
 import Spinner from "../components/Spinner"
 import Error from "../components/Error"
+import SearchBar from "../components/SearchBar"
 
 export default function ProductList() {
 	const [page, setPage] = useState(1)
 	const dispatch = useDispatch()
 	const cartItems = useSelector((state) => state.cart.items)
 	const { products, total, loading, error } = useCartProducts(page, 10)
-
 	const totalPages = Math.ceil(total / 10)
 
 	if (loading) return <Spinner message="Loading products..." />
@@ -21,6 +20,8 @@ export default function ProductList() {
 
 	return (
 		<div className="max-w-7xl mx-auto px-4">
+			<SearchBar />
+
 			<h2 className="text-center font-semibold text-2xl mt-6 mb-6">
 				Product List
 			</h2>
@@ -28,7 +29,6 @@ export default function ProductList() {
 			<div className="grid xxs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
 				{products.map((product) => {
 					const isInCart = cartItems.some((item) => item.id === product.id)
-
 					return (
 						<div
 							key={product.id}
@@ -65,6 +65,7 @@ export default function ProductList() {
 				})}
 			</div>
 
+			{/* Pagination */}
 			<div className="flex justify-center gap-4 mt-10 items-center">
 				<button
 					disabled={page === 1}

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { addToCart } from "../redux/cartSlice"
@@ -15,13 +15,18 @@ export default function ProductDetails() {
 	const { product, loading, error } = useCartProduct(id)
 	const [selectedImage, setSelectedImage] = useState("")
 
+	// initialize selected image only once after product loads
+	useEffect(() => {
+		if (product && !selectedImage) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect
+			setSelectedImage(product.thumbnail || product.images?.[0] || "")
+		}
+		// only run when product changes, not on selectedImage
+	}, [product, selectedImage])
+
 	if (loading) return <Spinner message="Loading product..." />
 	if (error) return <Error message={error} />
 	if (!product) return null
-
-	// initialize selected image once product is loaded
-	if (!selectedImage)
-		setSelectedImage(product.thumbnail || product.images?.[0] || "")
 
 	const isInCart = cartItems.some((item) => item.id === product.id)
 
@@ -79,14 +84,12 @@ export default function ProductDetails() {
 					<p>
 						<strong>Stock:</strong> {product.stock}
 					</p>
-
 					{product.stock > 0 ? (
 						<p className="text-green-600 font-semibold">In Stock</p>
 					) : (
 						<p className="text-red-600 font-semibold">Out of Stock</p>
 					)}
 
-					{/* Add to Cart */}
 					<button
 						onClick={() => {
 							dispatch(addToCart(product))
