@@ -10,6 +10,7 @@ export default function SearchBar() {
 			<input
 				type="text"
 				value={term}
+				name="search"
 				onChange={(e) => dispatch(setSearchTerm(e.target.value))}
 				placeholder="Search products..."
 				className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
