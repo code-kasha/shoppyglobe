@@ -21,6 +21,8 @@
 
 ## 👨‍💻 Author : Akash Damle <https://github.com/code-kasha>
 
+## 🛍️ Repo: https://github.com/code-kasha/shoppyglobe
+
 ## 🚀 Installation & Setup
 
 ### 1️⃣ Clone Repository
