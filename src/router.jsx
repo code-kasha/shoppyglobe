@@ -5,6 +5,7 @@ import NotFound from "./components/NotFound"
 import ProductList from "./routes/ProductList"
 import ProductDetails from "./routes/ProductDetails"
 import Cart from "./routes/Cart"
+import Checkout from "./routes/Checkout"
 
 const router = createBrowserRouter([
 	{
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
 			{
 				path: "cart",
 				element: <Cart />,
+			},
+			{
+				path: "checkout",
+				element: <Checkout />,
 			},
 		],
 	},

@@ -16,7 +16,6 @@ export default function useCartProduct(id) {
 		let isMounted = true
 
 		const fetchProduct = async () => {
-			setLoading(true)
 			try {
 				const res = await axios.get(`https://dummyjson.com/products/${id}`)
 				if (!isMounted) return
@@ -29,13 +28,13 @@ export default function useCartProduct(id) {
 				setSelectedImage(data.thumbnail || data.images?.[0] || "")
 			} catch (err) {
 				if (!isMounted) return
-				setError(err)
+				setError(err.message || "Failed to fetch product")
 			} finally {
 				if (isMounted) setLoading(false)
 			}
 		}
 
-		fetchProduct()
+		setTimeout(fetchProduct, 0) // Avoid synchronous setState warning
 
 		return () => {
 			isMounted = false
